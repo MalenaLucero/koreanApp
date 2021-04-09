@@ -20,4 +20,16 @@ public class UserService {
 	public Optional<User> getByUsername(String username){
 		return userRepository.findByUsername(username);
 	}
+	
+	public Optional<User> getById(Long id){
+		return userRepository.findById(id);
+	}
+	
+	public User save(User user) {
+		return userRepository.save(user);
+	}
+	
+	public void deleteById(Long id) {
+		userRepository.deleteById(id);
+	}
 }
