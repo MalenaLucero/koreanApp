@@ -10,6 +10,8 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 import com.koreanApp.enums.VideoEnum;
 
@@ -26,6 +28,11 @@ public class Video {
 	@Enumerated(EnumType.STRING)
 	@Column
 	private VideoEnum type;
+	@Column(name="id_artist")
+	private Integer idArtist;
+	@ManyToOne
+	@JoinColumn(name="id_artist", insertable=false, updatable=false)
+	private Artist artist;
 
 	public Video() {}
 
@@ -75,6 +82,14 @@ public class Video {
 
 	public void setType(VideoEnum type) {
 		this.type = type;
+	}
+	
+	public Integer getIdArtist() {
+		return idArtist;
+	}
+
+	public void setIdArtist(Integer idArtist) {
+		this.idArtist = idArtist;
 	}
 	
 	public static Map<String, String> textFromStringToMap(String text) {

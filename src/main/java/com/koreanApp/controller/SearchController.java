@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.koreanApp.payload.LyricRequest;
 import com.koreanApp.payload.SearchRequest;
 import com.koreanApp.payload.SearchResponse;
+import com.koreanApp.payload.SimpleSearchRequest;
 import com.koreanApp.service.SearchService;
 
 @Controller

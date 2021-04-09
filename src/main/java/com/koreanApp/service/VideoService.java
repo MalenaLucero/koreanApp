@@ -53,6 +53,9 @@ public class VideoService {
 		if(!FormatUtil.isStringEmpty(videoRequest.getType().name())) {
 			videoToUpdate.setType(videoRequest.getType());
 		}
+		if(!FormatUtil.isNumberEmpty(videoRequest.getIdArtist())) {
+			videoToUpdate.setIdArtist(videoRequest.getIdArtist());
+		}
 		return videoRepository.save(videoToUpdate);
 	}
 }
