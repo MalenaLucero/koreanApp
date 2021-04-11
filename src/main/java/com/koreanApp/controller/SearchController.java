@@ -8,9 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.koreanApp.payload.LyricRequest;
@@ -48,5 +50,24 @@ public class SearchController {
 			}
 			return new ResponseEntity<Object>(searchResult, HttpStatus.OK);
 		}
+	}
+	
+	@GetMapping(path = "/search/lyric")
+	public @ResponseBody ResponseEntity<Object> searchLyric(@RequestParam String word, @RequestParam(required = false) Integer idArtist){
+		LyricRequest lyricRequest = new LyricRequest(idArtist, word);
+		List<SearchResponse> lyricResult = searchService.searchLyric(lyricRequest);
+		return new ResponseEntity<Object>(lyricResult, HttpStatus.OK);
+	}
+	
+	@GetMapping(path = "/search/video")
+	public @ResponseBody ResponseEntity<Object> searchVideo(@RequestParam String word, @RequestParam(required = false) Integer idArtist){
+		List<SearchResponse> videoResult = searchService.searchVideo(word);
+		return new ResponseEntity<Object>(videoResult, HttpStatus.OK);
+	}
+	
+	@GetMapping(path = "/search/text")
+	public @ResponseBody ResponseEntity<Object> searchText(@RequestParam String word, @RequestParam(required = false) Integer idArtist){
+		List<SearchResponse> textResult = searchService.searchText(word);
+		return new ResponseEntity<Object>(textResult, HttpStatus.OK);
 	}
 }
