@@ -65,7 +65,7 @@ public class LyricController {
 		}
 	}
 	
-	@PreAuthorize("hasRole('DEVELOP') or hasRole('ADMIN')")
+	//@PreAuthorize("hasRole('DEVELOP') or hasRole('ADMIN')")
 	@PostMapping(path = "/lyric")
 	public @ResponseBody ResponseEntity<Object> addLyric(@RequestBody Lyric lyric) {
 		if(lyric.getTitle() == null || lyric.getTitle().length() == 0) {

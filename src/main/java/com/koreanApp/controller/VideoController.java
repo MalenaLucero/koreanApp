@@ -65,7 +65,7 @@ public class VideoController {
 		}
 	}
 	
-	@PreAuthorize("hasRole('DEVELOP') or hasRole('ADMIN')")
+	//@PreAuthorize("hasRole('DEVELOP') or hasRole('ADMIN')")
 	@PostMapping(path = "/video")
 	public @ResponseBody ResponseEntity<String> addVideo(@RequestBody Video video) {
 		if(video.getTitle() == null || video.getTitle().length() == 0) {
