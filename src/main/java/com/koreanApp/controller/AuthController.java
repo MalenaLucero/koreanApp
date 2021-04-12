@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
@@ -31,6 +32,7 @@ import com.koreanApp.repository.RoleRepository;
 import com.koreanApp.repository.UserRepository;
 import com.koreanApp.security.JwtUtils;
 import com.koreanApp.security.UserDetailsImpl;
+import com.koreanApp.service.UserService;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -50,6 +52,9 @@ public class AuthController {
 
 	@Autowired
 	JwtUtils jwtUtils;
+	
+	@Autowired
+	UserService userService;
 
 	@PostMapping("/signin")
 	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
@@ -92,10 +97,19 @@ public class AuthController {
 							 encoder.encode(signUpRequest.getPassword()));
 
 		Set<Role> roles = new HashSet<>();
-		Role userRole = roleRepository.findByName(RoleEnum.ROLE_USER)
+		
+		Optional<User> adminUser = userService.getByUsername("admin");
+		
+		if(adminUser.isPresent()) {
+			Role userRole = roleRepository.findByName(RoleEnum.ROLE_USER)
 				.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-		roles.add(userRole);
-
+			roles.add(userRole);
+		} else {
+			Role userRole = roleRepository.findByName(RoleEnum.ROLE_ADMIN)
+					.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+				roles.add(userRole);
+		}
+		
 		user.setRoles(roles);
 		userRepository.save(user);
 
