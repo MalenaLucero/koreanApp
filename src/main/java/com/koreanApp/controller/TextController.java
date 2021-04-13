@@ -66,7 +66,7 @@ public class TextController {
 		}
 	}
 	
-	//@PreAuthorize("hasRole('DEVELOP') or hasRole('ADMIN')")
+	@PreAuthorize("hasRole('DEVELOP') or hasRole('ADMIN')")
 	@PostMapping(path = "/text")
 	public @ResponseBody ResponseEntity<Object> addText(@RequestBody Text text) {
 		if(text.getTitle() == null || text.getTitle().length() == 0) {
