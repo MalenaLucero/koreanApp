@@ -10,4 +10,6 @@ public interface VideoRepository extends CrudRepository<Video, Integer>{
 	public Optional<Video> findByTitle(String title);
 	
 	public Iterable<Video> findByOriginalTextContaining(String word);
+	
+	public Iterable<Video> findByIdArtistAndOriginalTextContaining(Integer id, String word);
 }

@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import com.koreanApp.entity.Lyric;
 import com.koreanApp.payload.LyricRequest;
 import com.koreanApp.payload.SearchResponse;
+import com.koreanApp.payload.TextRequest;
+import com.koreanApp.payload.VideoRequest;
 import com.koreanApp.entity.Text;
 import com.koreanApp.entity.Video;
 import com.koreanApp.repository.LyricRepository;
@@ -32,14 +34,24 @@ public class SearchService {
 		}
 	}
 	
-	public List<SearchResponse> searchVideo(String word){
-		Iterable<Video> videoResults = videoRepository.findByOriginalTextContaining(word);
-		return generateVideoSearchResultList(videoResults, word);
+	public List<SearchResponse> searchVideo(VideoRequest videoRequest){
+		if(videoRequest.getIdArtist() == null || videoRequest.getIdArtist() == 0) {
+			Iterable<Video> videoResults = videoRepository.findByOriginalTextContaining(videoRequest.getWord());
+			return generateVideoSearchResultList(videoResults, videoRequest.getWord());
+		} else {
+			Iterable<Video> videoResults = videoRepository.findByIdArtistAndOriginalTextContaining(videoRequest.getIdArtist(), videoRequest.getWord());
+			return generateVideoSearchResultList(videoResults, videoRequest.getWord());
+		}
 	}
 	
-	public List<SearchResponse> searchText(String word){
-		Iterable<Text> textResults = textRepository.findByOriginalTextContaining(word);
-		return generateTextSearchResultList(textResults, word);
+	public List<SearchResponse> searchText(TextRequest textRequest){
+		if(textRequest.getIdArtist() == null || textRequest.getIdArtist() == 0) {
+			Iterable<Text> textResults = textRepository.findByOriginalTextContaining(textRequest.getWord());
+			return generateTextSearchResultList(textResults, textRequest.getWord());
+		} else {
+			Iterable<Text> textResults = textRepository.findByIdArtistAndOriginalTextContaining(textRequest.getIdArtist(), textRequest.getWord());
+			return generateTextSearchResultList(textResults, textRequest.getWord());
+		}
 	}
 	
 	private List<SearchResponse> generateTextSearchResultList(Iterable<Text> textResults, String word) {

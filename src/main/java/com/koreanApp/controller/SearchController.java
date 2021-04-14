@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.koreanApp.payload.LyricRequest;
 import com.koreanApp.payload.SearchRequest;
 import com.koreanApp.payload.SearchResponse;
+import com.koreanApp.payload.TextRequest;
+import com.koreanApp.payload.VideoRequest;
 import com.koreanApp.service.SearchService;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -41,11 +43,13 @@ public class SearchController {
 					searchResult.put("Lyric", lyricResult);
 					break;
 				case "VIDEO":
-					List<SearchResponse> videoResult = searchService.searchVideo(searchRequest.getWord());
+					VideoRequest videoRequest = new VideoRequest(searchRequest.getIdArtist(), searchRequest.getWord());
+					List<SearchResponse> videoResult = searchService.searchVideo(videoRequest);
 					searchResult.put("Video", videoResult);
 					break;
 				case "TEXT":
-					List<SearchResponse> textResult = searchService.searchText(searchRequest.getWord());
+					TextRequest textRequest = new TextRequest(searchRequest.getIdArtist(), searchRequest.getWord());
+					List<SearchResponse> textResult = searchService.searchText(textRequest);
 					searchResult.put("Text", textResult);
 					break;
 				}
@@ -63,13 +67,15 @@ public class SearchController {
 	
 	@GetMapping(path = "/search/video")
 	public @ResponseBody ResponseEntity<Object> searchVideo(@RequestParam String word, @RequestParam(required = false) Integer idArtist){
-		List<SearchResponse> videoResult = searchService.searchVideo(word);
+		VideoRequest videoRequest = new VideoRequest(idArtist, word);
+		List<SearchResponse> videoResult = searchService.searchVideo(videoRequest);
 		return new ResponseEntity<Object>(videoResult, HttpStatus.OK);
 	}
 	
 	@GetMapping(path = "/search/text")
 	public @ResponseBody ResponseEntity<Object> searchText(@RequestParam String word, @RequestParam(required = false) Integer idArtist){
-		List<SearchResponse> textResult = searchService.searchText(word);
+		TextRequest textRequest = new TextRequest(idArtist, word);
+		List<SearchResponse> textResult = searchService.searchText(textRequest);
 		return new ResponseEntity<Object>(textResult, HttpStatus.OK);
 	}
 }
