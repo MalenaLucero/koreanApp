@@ -1,5 +1,5 @@
 package com.koreanApp.enums;
 
-public enum SourceType {
+public enum SourceTypeEnum {
 	LYRIC, VIDEO, TEXT
 }

@@ -27,11 +27,9 @@ import com.koreanApp.service.ArtistService;
 @RequestMapping(path = "/api")
 
 public class ArtistController {
-	@Autowired
-	private ArtistService artistService;
+	@Autowired ArtistService artistService;
 	
-	@PreAuthorize("hasRole('PREMIUM') or hasRole('DEVELOP') or hasRole('ADMIN')")
-	@GetMapping(path = "/artist")
+	@GetMapping(path = "/search/artist")
 	public @ResponseBody ResponseEntity<Object> getAllArtists() {
 		try {
 			Iterable<Artist> artists = artistService.getAll();

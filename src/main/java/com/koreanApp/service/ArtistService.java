@@ -11,7 +11,7 @@ import com.koreanApp.repository.ArtistRepository;
 @Service
 public class ArtistService {
 	@Autowired
-	private static ArtistRepository artistRepository;
+	private ArtistRepository artistRepository;
 
 	public Iterable<Artist> getAll(){
         return artistRepository.findAll();

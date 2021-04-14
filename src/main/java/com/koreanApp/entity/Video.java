@@ -13,7 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import com.koreanApp.enums.VideoEnum;
+import com.koreanApp.enums.VideoTypeEnum;
 
 @Entity
 public class Video {
@@ -27,7 +27,7 @@ public class Video {
 	private String link;
 	@Enumerated(EnumType.STRING)
 	@Column
-	private VideoEnum type;
+	private VideoTypeEnum type;
 	@Column(name="id_artist")
 	private Integer idArtist;
 	@ManyToOne
@@ -76,11 +76,11 @@ public class Video {
 		this.link = link;
 	}
 	
-	public VideoEnum getType() {
+	public VideoTypeEnum getType() {
 		return type;
 	}
 
-	public void setType(VideoEnum type) {
+	public void setType(VideoTypeEnum type) {
 		this.type = type;
 	}
 	
