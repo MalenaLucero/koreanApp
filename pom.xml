@@ -9,11 +9,11 @@
 		<version>2.2.2.RELEASE</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.example</groupId>
-	<artifactId>accessing-data-mysql</artifactId>
+	<groupId>com.koreanApp</groupId>
+	<artifactId>koreanApp</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>accessing-data-mysql</name>
-	<description>Demo project for Spring Boot</description>
+	<name>koreanApp</name>
+	<description>Korean App Spring Boot proyect</description>
 
 	<properties>
 		<java.version>1.8</java.version>

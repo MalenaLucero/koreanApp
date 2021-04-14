@@ -6,7 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-public class FormatUtilTest{
+import com.koreanApp.KoreanAppTest;
+
+public class FormatUtilTest extends KoreanAppTest{
 	@Test 
 	public void textFromStringToArrayTest(){
 		String text = "Yeah, yeah\nOkay, okay, okay, okay\nYeah\n3년이 지났네\nAgust D";
