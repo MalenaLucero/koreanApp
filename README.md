@@ -7,6 +7,8 @@ https://koreanapp.herokuapp.com/api/search/lyric?word=오늘&idArtist
 
 https://koreanapp.herokuapp.com/api/search/video?word=이미&idArtist=3
 
+https://koreanapp.herokuapp.com/api/search/text?word=그런데&idArtist=3
+
 
 
 
