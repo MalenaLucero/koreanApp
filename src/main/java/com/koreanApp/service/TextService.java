@@ -46,7 +46,7 @@ public class TextService {
 			if(isTranslationValid) {
 				textToUpdate.setTranslation(textRequest.getTranslation());
 			} else {
-				throw new InvalidTranslationException("Invalid translation format");
+				throw new InvalidTranslationException();
 			}
 		}
 		if(textRequest.getLink() != null && textRequest.getLink().length() != 0) {

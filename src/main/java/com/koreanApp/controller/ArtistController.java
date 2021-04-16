@@ -1,7 +1,5 @@
 package com.koreanApp.controller;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
@@ -21,6 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.koreanApp.entity.Artist;
 import com.koreanApp.service.ArtistService;
+import com.koreanApp.util.FormatUtil;
+import com.koreanApp.util.RepeatedPropertyException;
+import com.koreanApp.util.MissingPropertyException;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -29,37 +30,15 @@ import com.koreanApp.service.ArtistService;
 public class ArtistController {
 	@Autowired ArtistService artistService;
 	
-	@GetMapping(path = "/search/artist")
-	public @ResponseBody ResponseEntity<Object> getAllArtists() {
+	@GetMapping(path = "/public/artist")
+	public @ResponseBody  ResponseEntity<Object> getArtists(@RequestParam(required = false) Integer id, @RequestParam(required = false) String name) {
 		try {
-			Iterable<Artist> artists = artistService.getAll();
-			return new ResponseEntity<Object>(artists, HttpStatus.OK);
-		} catch(Exception ex) {
-			return new ResponseEntity<Object>("Unexpected error: " + ex.getMessage(), HttpStatus.BAD_REQUEST);
-		}
-	}
-	
-	@PreAuthorize("hasRole('PREMIUM') or hasRole('DEVELOP') or hasRole('ADMIN')")
-	@GetMapping(path = "/artist/")
-	public @ResponseBody  ResponseEntity<Object> getArtistById(@RequestParam(required = false) Integer id, @RequestParam(required = false) String name) {
-		if((name == null || name.length() == 0) && (id == null || id == 0)) {
-			return new ResponseEntity<Object>("Missing name or id", HttpStatus.BAD_REQUEST);
-		}
-		try {
-			if(id != null && id != 0) {
-				Optional<Artist> artist = artistService.getArtistById(id);
-				if(artist.isPresent()) {
-					return new ResponseEntity<Object>(artist.get(), HttpStatus.OK);
-				} else {
-					return new ResponseEntity<Object>("Artist not found", HttpStatus.OK);
-				}
+			if(!FormatUtil.isNumberEmpty(id)) {
+				return new ResponseEntity<>(artistService.getArtists(id), HttpStatus.OK);
+			} else if(!FormatUtil.isStringEmpty(name)) {
+				return new ResponseEntity<>(artistService.getArtists(name), HttpStatus.OK);
 			} else {
-				Optional<Artist> artist = artistService.getArtistByName(name);
-				if(artist.isPresent()) {
-					return new ResponseEntity<Object>(artist.get(), HttpStatus.OK);
-				} else {
-					return new ResponseEntity<Object>("Artist not found", HttpStatus.OK);
-				}
+				return new ResponseEntity<>(artistService.getArtists(), HttpStatus.OK);
 			}
 		} catch(Exception ex) {
 			return new ResponseEntity<Object>("Unexpected error: " + ex.getMessage(), HttpStatus.BAD_REQUEST);
@@ -69,17 +48,10 @@ public class ArtistController {
 	@PreAuthorize("hasRole('DEVELOP') or hasRole('ADMIN')")
 	@PostMapping(path = "/artist")
 	public @ResponseBody ResponseEntity<Object> addArtist(@RequestBody Artist artist) {
-		if(artist.getName() == null || artist.getName().length() == 0) {
-			return new ResponseEntity<Object>("Missing artist name", HttpStatus.BAD_REQUEST);
-		}
 		try {
-			Optional<Artist> storedArtist = artistService.getArtistByName(artist.getName());
-			if(storedArtist.isPresent()) {
-				return new ResponseEntity<Object>("Artist with that name already exists", HttpStatus.BAD_REQUEST);
-			} else {
-				Artist addedArtist = artistService.save(artist);
-				return new ResponseEntity<Object>(addedArtist, HttpStatus.OK);
-			}
+			return new ResponseEntity<Object>(artistService.save(artist), HttpStatus.OK);
+		} catch(MissingPropertyException | RepeatedPropertyException ex) {
+			return new ResponseEntity<Object>(ex.getMessage(), HttpStatus.BAD_REQUEST);
 		} catch(Exception ex) {
 			return new ResponseEntity<Object>("Unexpected error: " + ex.getMessage(), HttpStatus.BAD_REQUEST);
 		}
@@ -88,25 +60,10 @@ public class ArtistController {
 	@PreAuthorize("hasRole('DEVELOP') or hasRole('ADMIN')")
 	@PutMapping(path = "/artist")
 	public @ResponseBody ResponseEntity<Object> updateArtistById(@RequestBody Artist artist) {
-		if(artist.getId() == null || artist.getId() == 0) {
-			return new ResponseEntity<Object>("Missing artist id", HttpStatus.BAD_REQUEST);
-		} 
-		if(artist.getName() == null || artist.getName().length() == 0) {
-			return new ResponseEntity<Object>("Missing artist name", HttpStatus.BAD_REQUEST);
-		} 
 		try {
-			Optional<Artist> artistToUpdate = artistService.getArtistById(artist.getId());
-			if(!artistToUpdate.isPresent()) {
-				return new ResponseEntity<Object>("Artist not found", HttpStatus.BAD_REQUEST);
-			} else {
-				Optional<Artist> artistStoredByName = artistService.getArtistByName(artist.getName());
-				if(artistStoredByName.isPresent()) {
-					return new ResponseEntity<Object>("Artist with that name already exists", HttpStatus.BAD_REQUEST);
-				} else {
-					Artist updatedArtist = artistService.updateArtist(artistToUpdate.get(), artist);
-					return new ResponseEntity<Object>(updatedArtist, HttpStatus.OK);
-				}
-			}
+			return new ResponseEntity<Object>(artistService.updateArtist(artist), HttpStatus.OK);
+		} catch(MissingPropertyException ex) {
+			return new ResponseEntity<Object>(ex.getMessage(), HttpStatus.BAD_REQUEST);
 		} catch(Exception ex) {
 			return new ResponseEntity<Object>("Unexpected error: " + ex.getMessage(), HttpStatus.BAD_REQUEST);
 		}
@@ -118,7 +75,7 @@ public class ArtistController {
 		try {
 			artistService.delete(id);
 			return new ResponseEntity<String>("Artist deleted with ID " + id, HttpStatus.OK);
-		} catch (EmptyResultDataAccessException exc) {
+		} catch (EmptyResultDataAccessException ex) {
 			return new ResponseEntity<String>("Artist not found", HttpStatus.BAD_REQUEST);
 	    } catch (Exception ex) {
 	    	return new ResponseEntity<String>("Unexpected error: " + ex.getMessage(), HttpStatus.BAD_REQUEST);

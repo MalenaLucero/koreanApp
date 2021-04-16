@@ -1,5 +1,5 @@
 package com.koreanApp.enums;
 
-public enum VideoTypeEnum {
+public enum VideoTypes {
 	RUN, RADIO, CURATED_ROOM
 }

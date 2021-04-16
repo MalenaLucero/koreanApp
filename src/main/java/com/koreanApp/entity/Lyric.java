@@ -68,7 +68,13 @@ public class Lyric {
 		this.idArtist = idArtist;
 	}
 	
-	public static Map<String, String[]> getLinesContaining(String originalText, String translation, String word) {
+	public boolean isTranslationValid() {
+		String[] originalTextArray = FormatUtil.textFromStringToArray(originalText);
+		String[] translationArray = FormatUtil.textFromStringToArray(translation);
+		return originalTextArray.length == translationArray.length;
+	}
+	
+	public Map<String, String[]> getLinesContaining(String word) {
 		String[] originalTextArray = FormatUtil.textFromStringToArray(originalText);
 		String[] translationArray = FormatUtil.textFromStringToArray(translation);
 		Map<String, String[]> lines = new HashMap<String, String[]>();
@@ -80,11 +86,5 @@ public class Lyric {
 			}
 		}
 		return FormatUtil.deleteMapDuplicates(lines);
-	}
-	
-	public static boolean isTranslationValid(String originalText, String translation) {
-		String[] originalTextArray = FormatUtil.textFromStringToArray(originalText);
-		String[] translationArray = FormatUtil.textFromStringToArray(translation);
-		return originalTextArray.length == translationArray.length;
 	}
 }

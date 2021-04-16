@@ -25,7 +25,7 @@ import com.koreanApp.service.SearchService;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping(path = "/api")
+@RequestMapping(path = "/api/public")
 public class SearchController {
 	@Autowired SearchService searchService;
 	

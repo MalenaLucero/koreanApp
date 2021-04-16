@@ -1,7 +1,5 @@
 package com.koreanApp.controller;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
@@ -21,7 +19,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.koreanApp.entity.Lyric;
 import com.koreanApp.service.LyricService;
+import com.koreanApp.util.FormatUtil;
 import com.koreanApp.util.InvalidTranslationException;
+import com.koreanApp.util.MissingPropertyException;
+import com.koreanApp.util.RepeatedPropertyException;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -31,36 +32,14 @@ public class LyricController {
 	
 	@PreAuthorize("hasRole('PREMIUM') or hasRole('DEVELOP') or hasRole('ADMIN')")
 	@GetMapping(path = "/lyric")
-	public @ResponseBody ResponseEntity<Object> getAllLyrics() {
+	public @ResponseBody ResponseEntity<Object> getLyrics(@RequestParam(required = false) Integer id, @RequestParam(required = false) String title) {
 		try {
-			Iterable<Lyric> lyrics = lyricService.getAll();
-			return new ResponseEntity<Object>(lyrics, HttpStatus.OK);
-		} catch(Exception ex) {
-			return new ResponseEntity<Object>("Unexpected error: " + ex.getMessage(), HttpStatus.BAD_REQUEST);
-		}
-	}
-	
-	@PreAuthorize("hasRole('PREMIUM') or hasRole('DEVELOP') or hasRole('ADMIN')")
-	@GetMapping(path = "/lyric/")
-	public @ResponseBody ResponseEntity<Object> getLyricByIdOrTitle(@RequestParam(required = false) Integer id, @RequestParam(required = false) String title) {
-		if((title == null || title.length() == 0) && (id == null || id == 0)) {
-			return new ResponseEntity<Object>("Missing name or id", HttpStatus.BAD_REQUEST);
-		}
-		try {
-			if(id != null) {
-				Optional<Lyric> lyric = lyricService.getLyricById(id);
-				if(lyric.isPresent()) {
-					return new ResponseEntity<Object>(lyric.get(), HttpStatus.OK);
-				} else {
-					return new ResponseEntity<Object>("Lyric not found", HttpStatus.OK);
-				}
+			if(!FormatUtil.isNumberEmpty(id)) {
+				return new ResponseEntity<Object>(lyricService.getLyrics(id), HttpStatus.OK);
+			} else if (!FormatUtil.isStringEmpty(title)){
+				return new ResponseEntity<Object>(lyricService.getLyrics(title), HttpStatus.OK);
 			} else {
-				Optional<Lyric> lyric = lyricService.getLyricByTitle(title);
-				if(lyric.isPresent()) {
-					return new ResponseEntity<Object>(lyric.get(), HttpStatus.OK);
-				} else {
-					return new ResponseEntity<Object>("Lyric not found", HttpStatus.OK);
-				}
+				return new ResponseEntity<Object>(lyricService.getLyrics(), HttpStatus.OK);
 			}
 		} catch(Exception ex) {
 			return new ResponseEntity<Object>("Unexpected error: " + ex.getMessage(), HttpStatus.BAD_REQUEST);
@@ -70,20 +49,10 @@ public class LyricController {
 	@PreAuthorize("hasRole('DEVELOP') or hasRole('ADMIN')")
 	@PostMapping(path = "/lyric")
 	public @ResponseBody ResponseEntity<Object> addLyric(@RequestBody Lyric lyric) {
-		if(lyric.getTitle() == null || lyric.getTitle().length() == 0) {
-			return new ResponseEntity<Object>("Missing title", HttpStatus.BAD_REQUEST);
-		}
-		if(lyric.getOriginalText() == null || lyric.getOriginalText().length() == 0) {
-			return new ResponseEntity<Object>("Missing original text", HttpStatus.BAD_REQUEST);
-		}
 		try {
-			Optional<Lyric> storedLyric = lyricService.getLyricByTitle(lyric.getTitle());
-			if(storedLyric.isPresent()) {
-				return new ResponseEntity<Object>("Lyric with that title already exists", HttpStatus.BAD_REQUEST);
-			} else {
-				Lyric addedLyric = lyricService.addLyric(lyric);
-				return new ResponseEntity<Object>(addedLyric, HttpStatus.OK);
-			}
+			return new ResponseEntity<Object>(lyricService.addLyric(lyric), HttpStatus.OK);
+		} catch(MissingPropertyException | RepeatedPropertyException | InvalidTranslationException ex) {
+			return new ResponseEntity<Object>(ex.getMessage(), HttpStatus.BAD_REQUEST);
 		} catch(Exception ex) {
 			return new ResponseEntity<Object>("Unexpected error: " + ex.getMessage(), HttpStatus.BAD_REQUEST);
 		}
@@ -104,29 +73,13 @@ public class LyricController {
 	
 	@PreAuthorize("hasRole('DEVELOP') or hasRole('ADMIN')")
 	@PutMapping(path = "/lyric")
-	public @ResponseBody ResponseEntity<String> updateLyricById(@RequestBody Lyric lyric) {
-		if(lyric.getId() == null || lyric.getId() == 0) {
-			return new ResponseEntity<String>("Missing lyric id", HttpStatus.BAD_REQUEST);
-		} 
-		if(lyric.getOriginalText() != null && lyric.getOriginalText().length() != 0 &&
-			lyric.getTranslation() != null && lyric.getTranslation().length() != 0) {
-			boolean isTranslationValid = Lyric.isTranslationValid(lyric.getOriginalText(), lyric.getTranslation());
-			if(!isTranslationValid) {
-				return new ResponseEntity<String>("Invalid translation format", HttpStatus.BAD_REQUEST);
-			} 
-		} 
+	public @ResponseBody ResponseEntity<Object> updateLyricById(@RequestBody Lyric lyric) {
 		try {
-			Optional<Lyric> lyricToUpdate = lyricService.getLyricById(lyric.getId());
-			if(!lyricToUpdate.isPresent()) {
-				return new ResponseEntity<String>("Lyric not found", HttpStatus.BAD_REQUEST);
-			} else {
-				Lyric updatedLyric = lyricService.updateLyric(lyricToUpdate.get(), lyric);
-				return new ResponseEntity<String>("Lyric updated with id " + updatedLyric.getId(), HttpStatus.OK);
-			}
-		} catch(InvalidTranslationException ex) {
-			return new ResponseEntity<String>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<Object>(lyricService.updateLyric(lyric), HttpStatus.OK);
+		} catch(MissingPropertyException | RepeatedPropertyException | InvalidTranslationException ex) {
+			return new ResponseEntity<Object>(ex.getMessage(), HttpStatus.BAD_REQUEST);
 		} catch(Exception ex) {
-			return new ResponseEntity<String>("Unexpected error: " + ex.getMessage(), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<Object>("Unexpected error: " + ex.getMessage(), HttpStatus.BAD_REQUEST);
 		}
 	}
 }

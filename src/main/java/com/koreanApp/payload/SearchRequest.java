@@ -2,11 +2,11 @@ package com.koreanApp.payload;
 
 import java.util.Arrays;
 
-import com.koreanApp.enums.SourceTypeEnum;
+import com.koreanApp.enums.SourceTypes;
 
 public class SearchRequest {
 	private String word;
-	private SourceTypeEnum[] sourceTypes;
+	private SourceTypes[] sourceTypes;
 	private Integer idArtist;
 	
 	public SearchRequest() {}
@@ -17,11 +17,11 @@ public class SearchRequest {
 	public void setWord(String word) {
 		this.word = word;
 	}
-	public SourceTypeEnum[] getSourceTypes() {
+	public SourceTypes[] getSourceTypes() {
 		return sourceTypes;
 	}
 
-	public void setSourceTypes(SourceTypeEnum[] sourceTypes) {
+	public void setSourceTypes(SourceTypes[] sourceTypes) {
 		this.sourceTypes = sourceTypes;
 	}
 	public Integer getIdArtist() {

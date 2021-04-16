@@ -77,7 +77,7 @@ public class SearchService {
 	public List<SearchResponse> generateSearchResultList(Iterable<Lyric> lyricsResults, String word){
 		List<SearchResponse> searchResults = new ArrayList<SearchResponse>();
 		for(Lyric lyric: lyricsResults) {
-			Map<String, String[]> lines = Lyric.getLinesContaining(lyric.getOriginalText(), lyric.getTranslation(), word);
+			Map<String, String[]> lines = lyric.getLinesContaining(word);
 			SearchResponse searchResult = new SearchResponse(lyric.getId(), lyric.getTitle(), lines);
 			searchResults.add(searchResult);
 		}
