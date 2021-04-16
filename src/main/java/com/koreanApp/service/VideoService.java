@@ -8,54 +8,64 @@ import org.springframework.stereotype.Service;
 import com.koreanApp.entity.Video;
 import com.koreanApp.repository.VideoRepository;
 import com.koreanApp.util.FormatUtil;
+import com.koreanApp.util.MissingPropertyException;
+import com.koreanApp.util.RepeatedPropertyException;
 
 @Service
 public class VideoService {
 	@Autowired
 	private VideoRepository videoRepository;
 	
-	public Iterable<Video> getAll(){
+	public Iterable<Video> getVideos(){
         return videoRepository.findAll();
     }
 	
-	public Optional<Video> getVideoById(Integer id) {
+	public Optional<Video> getVideo(Integer id) {
 		return videoRepository.findById(id);
 	}
 	
-	public Optional<Video> getVideoByTitle(String title){
+	public Optional<Video> getVideo(String title){
 		return videoRepository.findByTitle(title);
 	}
 	
-	public Video addVideo(Video video) {
+	public Video addVideo(Video video) throws MissingPropertyException, RepeatedPropertyException {
+		if(FormatUtil.isStringEmpty(video.getTitle())) {
+			throw new MissingPropertyException("title");
+		}
+		if (videoRepository.findByTitle(video.getTitle()).isPresent()) {
+			throw new RepeatedPropertyException("title");
+		} 
 		return videoRepository.save(video);
+	}
+	
+	public Video updateVideo(Video video) throws MissingPropertyException, RepeatedPropertyException {
+		if(FormatUtil.isNumberEmpty(video.getId())) {
+			throw new MissingPropertyException("ID");
+		}
+		Video videoToUpdate = videoRepository.findById(video.getId()).get();
+		if(!FormatUtil.isStringEmpty(video.getTitle())) {
+			if (videoRepository.findByTitle(video.getTitle()).isPresent()) {
+				throw new RepeatedPropertyException("title");
+			} else {
+				videoToUpdate.setTitle(video.getTitle());
+			}
+		}
+		if(!FormatUtil.isStringEmpty(video.getOriginalText())) {
+			videoToUpdate.setOriginalText(video.getOriginalText());
+		}
+		if(!FormatUtil.isStringEmpty(video.getTranslation())) {
+			videoToUpdate.setTranslation(video.getTranslation());
+		}
+		if(!FormatUtil.isStringEmpty(video.getLink())) {
+			videoToUpdate.setLink(video.getLink());
+		}
+		if(!FormatUtil.isNumberEmpty(video.getIdArtist())) {
+			videoToUpdate.setIdArtist(video.getIdArtist());
+		}
+		return videoRepository.save(videoToUpdate);
 	}
 	
 	public void deleteVideo(Integer id) {
 		videoRepository.deleteById(id);
-	}
-	
-	public Video updateVideo(Video videoToUpdate, Video videoRequest) {
-		if(!FormatUtil.isStringEmpty(videoRequest.getTitle())) {
-			videoToUpdate.setTitle(videoRequest.getTitle());
-		}
-		if(!FormatUtil.isStringEmpty(videoRequest.getOriginalText())) {
-			videoToUpdate.setOriginalText(videoRequest.getOriginalText());
-		}
-		if(!FormatUtil.isStringEmpty(videoRequest.getTranslation())) {
-			videoToUpdate.setTranslation(videoRequest.getTranslation());	
-		}
-		if(!FormatUtil.isStringEmpty(videoRequest.getLink())) {
-			videoToUpdate.setLink(videoRequest.getLink());
-		}
-		if(!FormatUtil.isStringEmpty(videoRequest.getLink())) {
-			videoToUpdate.setLink(videoRequest.getLink());
-		}
-		if(!FormatUtil.isStringEmpty(videoRequest.getType().name())) {
-			videoToUpdate.setType(videoRequest.getType());
-		}
-		if(!FormatUtil.isNumberEmpty(videoRequest.getIdArtist())) {
-			videoToUpdate.setIdArtist(videoRequest.getIdArtist());
-		}
-		return videoRepository.save(videoToUpdate);
 	}
 }

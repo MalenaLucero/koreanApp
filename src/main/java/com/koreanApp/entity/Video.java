@@ -14,6 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import com.koreanApp.enums.VideoTypes;
+import com.koreanApp.util.FormatUtil;
 
 @Entity
 public class Video {
@@ -92,7 +93,7 @@ public class Video {
 		this.idArtist = idArtist;
 	}
 	
-	public static Map<String, String> textFromStringToMap(String text) {
+	private Map<String, String> textFromStringToMap(String text) {
 		String[] textArray = text.split("\\n");
 		Map<String, String> textMap = new HashMap<String, String>();
 		String temporization = null;
@@ -106,7 +107,7 @@ public class Video {
 		return textMap;
 	}
 	
-	public static Map<String, String[]> getLinesContaining(String originalText, String translation, String word) {
+	public Map<String, String[]> getLinesContaining(String word) {
 		Map<String, String> originalTextMap = textFromStringToMap(originalText);
 		Map<String, String> translationMap = textFromStringToMap(translation);
 		Map<String, String[]> lines = new HashMap<String, String[]>();
@@ -117,22 +118,6 @@ public class Video {
 				lines.put(key, linesArray);
 			}
 		}
-		return deleteMapDuplicates(lines);
-	}
-	
-	public static Map<String, String[]> deleteMapDuplicates(Map<String, String[]> lines){
-		Map<String, String[]> linesWithoutDuplicates = new HashMap<String, String[]>();
-		for(String key: lines.keySet()) {
-			boolean isDuplicate = false;
-			for(String secondKey: linesWithoutDuplicates.keySet()) {
-				if(lines.get(key)[0].equals(linesWithoutDuplicates.get(secondKey)[0])) {
-					isDuplicate = true;
-				}
-			}
-			if(!isDuplicate) {
-				linesWithoutDuplicates.put(key, lines.get(key));
-			}
-		}
-		return linesWithoutDuplicates;
+		return FormatUtil.deleteMapDuplicates(lines);
 	}
 }

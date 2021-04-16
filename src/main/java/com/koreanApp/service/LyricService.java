@@ -43,11 +43,7 @@ public class LyricService {
 		return lyricRepository.save(lyric);
 	}
 	
-	public void deleteLyric(Integer id) {
-		lyricRepository.deleteById(id);
-	}
-	
-	public Lyric updateLyric(Lyric lyric) throws Exception {
+	public Lyric updateLyric(Lyric lyric) throws MissingPropertyException, RepeatedPropertyException, InvalidTranslationException {
 		if(FormatUtil.isNumberEmpty(lyric.getId())) {
 			throw new MissingPropertyException("ID");
 		}
@@ -75,5 +71,9 @@ public class LyricService {
 			lyricToUpdate.setIdArtist(lyric.getIdArtist());
 		}
 		return lyricRepository.save(lyricToUpdate);
+	}
+	
+	public void deleteLyric(Integer id) {
+		lyricRepository.deleteById(id);
 	}
 }

@@ -79,7 +79,7 @@ public class Text {
 		this.idArtist = idArtist;
 	}
 
-	public static boolean isTranslationValid(String originalText, String translation) {
+	public boolean isTranslationValid() {
 		String[] originalTextArray = FormatUtil.textFromStringToArray(originalText);
 		String[] translationArray = FormatUtil.textFromStringToArray(translation);
 		return originalTextArray.length == translationArray.length;

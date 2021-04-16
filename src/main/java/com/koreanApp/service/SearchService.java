@@ -67,7 +67,7 @@ public class SearchService {
 	public List<SearchResponse> generateVideoSearchResultList(Iterable<Video> videoResults, String word){
 		List<SearchResponse> searchResults = new ArrayList<SearchResponse>();
 		for(Video video: videoResults) {
-			Map<String, String[]> lines = Video.getLinesContaining(video.getOriginalText(), video.getTranslation(), word);
+			Map<String, String[]> lines = video.getLinesContaining(word);
 			SearchResponse searchResult = new SearchResponse(video.getId(), video.getTitle(), lines);
 			searchResults.add(searchResult);
 		}
