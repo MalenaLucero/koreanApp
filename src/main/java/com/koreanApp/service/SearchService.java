@@ -8,15 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.koreanApp.entity.Lyric;
-import com.koreanApp.payload.LyricRequest;
 import com.koreanApp.payload.SearchResponse;
-import com.koreanApp.payload.TextRequest;
-import com.koreanApp.payload.VideoRequest;
 import com.koreanApp.entity.Text;
 import com.koreanApp.entity.Video;
 import com.koreanApp.repository.LyricRepository;
 import com.koreanApp.repository.TextRepository;
 import com.koreanApp.repository.VideoRepository;
+import com.koreanApp.util.FormatUtil;
+import com.koreanApp.util.InvalidSearchWordException;
 
 @Service
 public class SearchService {
@@ -24,47 +23,56 @@ public class SearchService {
 	@Autowired VideoRepository videoRepository;
 	@Autowired TextRepository textRepository;
 	
-	public List<SearchResponse> searchLyric(LyricRequest lyricRequest){
-		if(lyricRequest.getIdArtist() == null || lyricRequest.getIdArtist() == 0) {
-			Iterable<Lyric> lyricsResults = lyricRepository.findByOriginalTextContaining(lyricRequest.getWord());
-			return generateSearchResultList(lyricsResults, lyricRequest.getWord());
+	public List<SearchResponse> searchLyric(Integer idArtist, String word) throws InvalidSearchWordException{
+		if(FormatUtil.isStringEmpty(word)) {
+			throw new InvalidSearchWordException();
+		} 
+		Iterable<Lyric> lyricsResults;
+		if(FormatUtil.isNumberEmpty(idArtist)) {
+			lyricsResults = lyricRepository.findByOriginalTextContaining(word);
 		} else {
-			Iterable<Lyric> lyricsResults = lyricRepository.findByIdArtistAndOriginalTextContaining(lyricRequest.getIdArtist(), lyricRequest.getWord());
-			return generateSearchResultList(lyricsResults, lyricRequest.getWord());
-		}
+			lyricsResults = lyricRepository.findByIdArtistAndOriginalTextContaining(idArtist, word);
+		}	
+		return generateLyricSearchResult(lyricsResults, word);
 	}
 	
-	public List<SearchResponse> searchVideo(VideoRequest videoRequest){
-		if(videoRequest.getIdArtist() == null || videoRequest.getIdArtist() == 0) {
-			Iterable<Video> videoResults = videoRepository.findByOriginalTextContaining(videoRequest.getWord());
-			return generateVideoSearchResultList(videoResults, videoRequest.getWord());
+	public List<SearchResponse> searchVideo(Integer idArtist, String word) throws InvalidSearchWordException{
+		if(FormatUtil.isStringEmpty(word)) {
+			throw new InvalidSearchWordException();
+		} 
+		Iterable<Video> videoResults;
+		if(FormatUtil.isNumberEmpty(idArtist)) {
+			videoResults = videoRepository.findByOriginalTextContaining(word);
 		} else {
-			Iterable<Video> videoResults = videoRepository.findByIdArtistAndOriginalTextContaining(videoRequest.getIdArtist(), videoRequest.getWord());
-			return generateVideoSearchResultList(videoResults, videoRequest.getWord());
+			videoResults = videoRepository.findByIdArtistAndOriginalTextContaining(idArtist, word);
 		}
+		return generateVideoSearchResult(videoResults, word);
 	}
 	
-	public List<SearchResponse> searchText(TextRequest textRequest){
-		if(textRequest.getIdArtist() == null || textRequest.getIdArtist() == 0) {
-			Iterable<Text> textResults = textRepository.findByOriginalTextContaining(textRequest.getWord());
-			return generateTextSearchResultList(textResults, textRequest.getWord());
+	public List<SearchResponse> searchText(Integer idArtist, String word) throws InvalidSearchWordException{
+		if(FormatUtil.isStringEmpty(word)) {
+			throw new InvalidSearchWordException();
+		} 
+		Iterable<Text> textResults;
+		if(FormatUtil.isNumberEmpty(idArtist)) {
+			textResults = textRepository.findByOriginalTextContaining(word);
 		} else {
-			Iterable<Text> textResults = textRepository.findByIdArtistAndOriginalTextContaining(textRequest.getIdArtist(), textRequest.getWord());
-			return generateTextSearchResultList(textResults, textRequest.getWord());
+			textResults = textRepository.findByIdArtistAndOriginalTextContaining(idArtist, word);
 		}
+		return generateTextSearchResult(textResults, word);
 	}
 	
-	private List<SearchResponse> generateTextSearchResultList(Iterable<Text> textResults, String word) {
+	private List<SearchResponse> generateTextSearchResult(Iterable<Text> textResults, String word) {
 		List<SearchResponse> searchResults = new ArrayList<SearchResponse>();
 		for(Text text: textResults) {
-			Map<String, String[]> lines = Text.getLinesContaining(text.getOriginalText(), text.getTranslation(), word);
+			Map<String, String[]> lines = text.getLinesContaining(word);
 			SearchResponse searchResult = new SearchResponse(text.getId(), text.getTitle(), lines);
 			searchResults.add(searchResult);
 		}
 		return searchResults;
 	}
 
-	public List<SearchResponse> generateVideoSearchResultList(Iterable<Video> videoResults, String word){
+	private List<SearchResponse> generateVideoSearchResult(Iterable<Video> videoResults, String word){
 		List<SearchResponse> searchResults = new ArrayList<SearchResponse>();
 		for(Video video: videoResults) {
 			Map<String, String[]> lines = video.getLinesContaining(word);
@@ -74,7 +82,7 @@ public class SearchService {
 		return searchResults;
 	}
 	
-	public List<SearchResponse> generateSearchResultList(Iterable<Lyric> lyricsResults, String word){
+	private List<SearchResponse> generateLyricSearchResult(Iterable<Lyric> lyricsResults, String word){
 		List<SearchResponse> searchResults = new ArrayList<SearchResponse>();
 		for(Lyric lyric: lyricsResults) {
 			Map<String, String[]> lines = lyric.getLinesContaining(word);

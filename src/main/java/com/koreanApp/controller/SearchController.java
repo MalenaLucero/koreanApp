@@ -16,66 +16,78 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.koreanApp.payload.LyricRequest;
 import com.koreanApp.payload.SearchRequest;
 import com.koreanApp.payload.SearchResponse;
-import com.koreanApp.payload.TextRequest;
-import com.koreanApp.payload.VideoRequest;
 import com.koreanApp.service.SearchService;
+import com.koreanApp.util.InvalidSearchWordException;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping(path = "/api/public")
+@RequestMapping(path = "/api/public/search")
 public class SearchController {
 	@Autowired SearchService searchService;
 	
-	@PostMapping(path = "/search")
-	public @ResponseBody ResponseEntity<Object> search(@RequestBody SearchRequest searchRequest){
-		if(searchRequest.getWord() == null || searchRequest.getWord().length() == 0) {
-			return new ResponseEntity<Object>("Search word missing", HttpStatus.BAD_REQUEST);
-		} else {
+	@PostMapping(path = "")
+	public @ResponseBody ResponseEntity<Object> search(@RequestBody SearchRequest searchRequest) {
+		try {
 			Map<String, List<SearchResponse>> searchResult = new HashMap<String, List<SearchResponse>>();
 			for (int i = 0; i < searchRequest.getSourceTypes().length; i++) {
 				switch(searchRequest.getSourceTypes()[i].name()) {
 				case "LYRIC":
-					LyricRequest lyricRequest = new LyricRequest(searchRequest.getIdArtist(), searchRequest.getWord());
-					List<SearchResponse> lyricResult = searchService.searchLyric(lyricRequest);
+					List<SearchResponse> lyricResult = searchService.searchLyric(searchRequest.getIdArtist(), searchRequest.getWord());
 					searchResult.put("Lyric", lyricResult);
 					break;
 				case "VIDEO":
-					VideoRequest videoRequest = new VideoRequest(searchRequest.getIdArtist(), searchRequest.getWord());
-					List<SearchResponse> videoResult = searchService.searchVideo(videoRequest);
+					List<SearchResponse> videoResult = searchService.searchVideo(searchRequest.getIdArtist(), searchRequest.getWord());
 					searchResult.put("Video", videoResult);
 					break;
 				case "TEXT":
-					TextRequest textRequest = new TextRequest(searchRequest.getIdArtist(), searchRequest.getWord());
-					List<SearchResponse> textResult = searchService.searchText(textRequest);
+					List<SearchResponse> textResult = searchService.searchText(searchRequest.getIdArtist(), searchRequest.getWord());
 					searchResult.put("Text", textResult);
 					break;
 				}
 			}
 			return new ResponseEntity<Object>(searchResult, HttpStatus.OK);
+		} catch (InvalidSearchWordException ex){
+			return new ResponseEntity<Object>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+		} catch (Exception ex){
+			return new ResponseEntity<Object>("Unexpected error: " + ex.getMessage(), HttpStatus.BAD_REQUEST);
 		}
 	}
 	
-	@GetMapping(path = "/search/lyric")
+	@GetMapping(path = "/lyric")
 	public @ResponseBody ResponseEntity<Object> searchLyric(@RequestParam String word, @RequestParam(required = false) Integer idArtist){
-		LyricRequest lyricRequest = new LyricRequest(idArtist, word);
-		List<SearchResponse> lyricResult = searchService.searchLyric(lyricRequest);
-		return new ResponseEntity<Object>(lyricResult, HttpStatus.OK);
+		try {
+			List<SearchResponse> lyricResult = searchService.searchLyric(idArtist, word);
+			return new ResponseEntity<Object>(lyricResult, HttpStatus.OK);
+		} catch (InvalidSearchWordException ex){
+			return new ResponseEntity<Object>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+		} catch (Exception ex){
+			return new ResponseEntity<Object>("Unexpected error: " + ex.getMessage(), HttpStatus.BAD_REQUEST);
+		}
 	}
 	
-	@GetMapping(path = "/search/video")
+	@GetMapping(path = "/video")
 	public @ResponseBody ResponseEntity<Object> searchVideo(@RequestParam String word, @RequestParam(required = false) Integer idArtist){
-		VideoRequest videoRequest = new VideoRequest(idArtist, word);
-		List<SearchResponse> videoResult = searchService.searchVideo(videoRequest);
-		return new ResponseEntity<Object>(videoResult, HttpStatus.OK);
+		try {
+			List<SearchResponse> videoResult = searchService.searchVideo(idArtist, word);
+			return new ResponseEntity<Object>(videoResult, HttpStatus.OK);
+		} catch (InvalidSearchWordException ex){
+			return new ResponseEntity<Object>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+		} catch (Exception ex){
+			return new ResponseEntity<Object>("Unexpected error: " + ex.getMessage(), HttpStatus.BAD_REQUEST);
+		}
 	}
 	
-	@GetMapping(path = "/search/text")
+	@GetMapping(path = "/text")
 	public @ResponseBody ResponseEntity<Object> searchText(@RequestParam String word, @RequestParam(required = false) Integer idArtist){
-		TextRequest textRequest = new TextRequest(idArtist, word);
-		List<SearchResponse> textResult = searchService.searchText(textRequest);
-		return new ResponseEntity<Object>(textResult, HttpStatus.OK);
+		try {
+			List<SearchResponse> textResult = searchService.searchText(idArtist, word);
+			return new ResponseEntity<Object>(textResult, HttpStatus.OK);
+		} catch (InvalidSearchWordException ex){
+			return new ResponseEntity<Object>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+		} catch (Exception ex){
+			return new ResponseEntity<Object>("Unexpected error: " + ex.getMessage(), HttpStatus.BAD_REQUEST);
+		}
 	}
 }

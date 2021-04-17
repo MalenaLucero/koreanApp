@@ -85,7 +85,7 @@ public class Text {
 		return originalTextArray.length == translationArray.length;
 	}
 
-	public static Map<String, String[]> getLinesContaining(String originalText, String translation, String word) {
+	public Map<String, String[]> getLinesContaining(String word) {
 		String[] originalTextArray = FormatUtil.textFromStringToArray(originalText);
 		String[] translationArray = FormatUtil.textFromStringToArray(translation);
 		Map<String, String[]> lines = new HashMap<String, String[]>();
