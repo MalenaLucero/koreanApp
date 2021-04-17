@@ -20,11 +20,11 @@ public class ArtistService {
         return artistRepository.findAll();
     }
 	
-	public Optional<Artist> getArtists(Integer id) {
+	public Optional<Artist> getArtist(Integer id) {
 		return artistRepository.findById(id);
 	}
 	
-	public Optional<Artist> getArtists(String name){
+	public Optional<Artist> getArtist(String name){
 		return artistRepository.findByName(name);
 	}
 	
