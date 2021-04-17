@@ -20,11 +20,11 @@ public class ArtistService {
         return artistRepository.findAll();
     }
 	
-	public Optional<Artist> getArtist(Integer id) {
+	public Optional<Artist> getArtistById(Integer id) {
 		return artistRepository.findById(id);
 	}
 	
-	public Optional<Artist> getArtist(String name){
+	public Optional<Artist> getArtistByName(String name){
 		return artistRepository.findByName(name);
 	}
 	
@@ -38,16 +38,19 @@ public class ArtistService {
 		}
 	}
 	
-	public void delete(Integer id) {
-		artistRepository.deleteById(id);
-	}
-	
-	public Artist updateArtist(Artist artist) throws MissingPropertyException {
+	public Artist updateArtist(Artist artist) throws MissingPropertyException, RepeatedPropertyException {
 		if(FormatUtil.isNumberEmpty(artist.getId()) || FormatUtil.isStringEmpty(artist.getName())) {
 			throw new MissingPropertyException("name or ID");
-		} 
-		Artist artistToUpdate = artistRepository.findById(artist.getId()).get();
-		artistToUpdate.setName(artist.getName());
-		return artistRepository.save(artistToUpdate);
+		} else if (artistRepository.findByName(artist.getName()).isPresent()) {
+			throw new RepeatedPropertyException("name");
+		} else {
+			Artist artistToUpdate = artistRepository.findById(artist.getId()).get();
+			artistToUpdate.setName(artist.getName());
+			return artistRepository.save(artistToUpdate);
+		}
+	}
+	
+	public void delete(Integer id) {
+		artistRepository.deleteById(id);
 	}
 }

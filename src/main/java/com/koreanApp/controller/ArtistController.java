@@ -34,9 +34,9 @@ public class ArtistController {
 	public @ResponseBody  ResponseEntity<Object> getArtists(@RequestParam(required = false) Integer id, @RequestParam(required = false) String name) {
 		try {
 			if(!FormatUtil.isNumberEmpty(id)) {
-				return new ResponseEntity<>(artistService.getArtist(id), HttpStatus.OK);
+				return new ResponseEntity<>(artistService.getArtistById(id), HttpStatus.OK);
 			} else if(!FormatUtil.isStringEmpty(name)) {
-				return new ResponseEntity<>(artistService.getArtist(name), HttpStatus.OK);
+				return new ResponseEntity<>(artistService.getArtistByName(name), HttpStatus.OK);
 			} else {
 				return new ResponseEntity<>(artistService.getArtists(), HttpStatus.OK);
 			}
@@ -62,7 +62,7 @@ public class ArtistController {
 	public @ResponseBody ResponseEntity<Object> updateArtistById(@RequestBody Artist artist) {
 		try {
 			return new ResponseEntity<Object>(artistService.updateArtist(artist), HttpStatus.OK);
-		} catch(MissingPropertyException ex) {
+		} catch(MissingPropertyException | RepeatedPropertyException ex) {
 			return new ResponseEntity<Object>(ex.getMessage(), HttpStatus.BAD_REQUEST);
 		} catch(Exception ex) {
 			return new ResponseEntity<Object>("Unexpected error: " + ex.getMessage(), HttpStatus.BAD_REQUEST);
