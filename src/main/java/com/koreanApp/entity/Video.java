@@ -120,4 +120,16 @@ public class Video {
 		}
 		return FormatUtil.deleteMapDuplicates(lines);
 	}
+	
+	public boolean isTranslationValid() {
+		boolean isValid = true;
+		Map<String, String> originalTextMap = textFromStringToMap(originalText);
+		Map<String, String> translationMap = textFromStringToMap(translation);
+		for(String key: originalTextMap.keySet()) {
+			if(!translationMap.containsKey(key)) {
+				isValid = false;
+			}
+		}
+		return isValid;
+	}
 }

@@ -1,11 +1,14 @@
 package com.koreanApp.util;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 public class FormatUtil {
 	public static String[] textFromStringToArray(String text) {
-		return text.split("\\n");
+		String[] textArray = text.split("\\n");
+		String[] textArrayWithoutEmptyStrings = Arrays.stream(textArray).filter(x -> x.length() > 0).toArray(String[]::new);
+		return textArrayWithoutEmptyStrings;
 	}
 	
 	public static String[] textFromParagraphToSentenceArray(String text) {
