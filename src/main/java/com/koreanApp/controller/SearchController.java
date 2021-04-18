@@ -20,6 +20,7 @@ import com.koreanApp.payload.SearchRequest;
 import com.koreanApp.payload.SearchResponse;
 import com.koreanApp.service.SearchService;
 import com.koreanApp.util.InvalidSearchWordException;
+import com.koreanApp.util.InvalidTypeException;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -38,8 +39,8 @@ public class SearchController {
 					searchResult.put("Lyric", lyricResult);
 					break;
 				case "VIDEO":
-					//List<SearchResponse> videoResult = searchService.searchVideo(searchRequest.getIdArtist(), searchRequest.getWord());
-					//searchResult.put("Video", videoResult);
+					List<SearchResponse> videoResult = searchService.searchVideo(searchRequest.getIdArtist(), searchRequest.getWord(), searchRequest.getVideoType());
+					searchResult.put("Video", videoResult);
 					break;
 				case "TEXT":
 					List<SearchResponse> textResult = searchService.searchText(searchRequest.getIdArtist(), searchRequest.getWord());
@@ -48,7 +49,7 @@ public class SearchController {
 				}
 			}
 			return new ResponseEntity<Object>(searchResult, HttpStatus.OK);
-		} catch (InvalidSearchWordException ex){
+		} catch (InvalidSearchWordException | InvalidTypeException ex){
 			return new ResponseEntity<Object>(ex.getMessage(), HttpStatus.BAD_REQUEST);
 		} catch (Exception ex){
 			return new ResponseEntity<Object>("Unexpected error: " + ex.getMessage(), HttpStatus.BAD_REQUEST);
@@ -72,7 +73,7 @@ public class SearchController {
 		try {
 			List<SearchResponse> videoResult = searchService.searchVideo(idArtist, word, type);
 			return new ResponseEntity<Object>(videoResult, HttpStatus.OK);
-		} catch (InvalidSearchWordException ex){
+		} catch (InvalidSearchWordException | InvalidTypeException ex){
 			return new ResponseEntity<Object>(ex.getMessage(), HttpStatus.BAD_REQUEST);
 		} catch (Exception ex){
 			return new ResponseEntity<Object>("Unexpected error: " + ex.getMessage(), HttpStatus.BAD_REQUEST);

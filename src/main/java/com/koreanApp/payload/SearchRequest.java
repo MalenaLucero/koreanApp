@@ -1,13 +1,12 @@
 package com.koreanApp.payload;
 
-import java.util.Arrays;
-
 import com.koreanApp.enums.SourceTypes;
 
 public class SearchRequest {
 	private String word;
 	private SourceTypes[] sourceTypes;
 	private Integer idArtist;
+	private String videoType;
 	
 	public SearchRequest() {}
 	
@@ -31,9 +30,13 @@ public class SearchRequest {
 		this.idArtist = idArtist;
 	}
 
-	@Override
-	public String toString() {
-		return "SearchRequest [word=" + word + ", sourceTypes=" + Arrays.toString(sourceTypes) + ", idArtist="
-				+ idArtist + "]";
+	public String getVideoType() {
+		return videoType;
 	}
+
+	public void setVideoType(String videoType) {
+		this.videoType = videoType;
+	}
+	
+	
 }

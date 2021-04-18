@@ -42,6 +42,9 @@ public class SearchService {
 		if(FormatUtil.isStringEmpty(word)) {
 			throw new InvalidSearchWordException();
 		} 
+		if(!FormatUtil.isStringEmpty(type) && !FormatUtil.isVideoTypeValid(type)) {
+			throw new InvalidTypeException(type);
+		}
 		Iterable<Video> videoResults;
 		if(FormatUtil.isNumberEmpty(idArtist) && FormatUtil.isStringEmpty(type)) {
 			videoResults = videoRepository.findByOriginalTextContaining(word);

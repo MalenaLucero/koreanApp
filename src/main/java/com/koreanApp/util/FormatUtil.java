@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.koreanApp.enums.VideoTypes;
+
 public class FormatUtil {
 	public static String[] textFromStringToArray(String text) {
 		String[] textArray = text.split("\\n");
@@ -37,5 +39,16 @@ public class FormatUtil {
 			}
 		}
 		return linesWithoutDuplicates;
+	}
+	
+	public static boolean isVideoTypeValid(String type) {
+		String[] videoTypes = Arrays.toString(VideoTypes.values()).replaceAll("^.|.$", "").split(", ");
+		boolean isValid = false;
+		for (String videoType: videoTypes) {
+			if(videoType.equals(type)) {
+				isValid = true;
+			}
+		}
+		return isValid;
 	}
 }

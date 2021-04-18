@@ -49,4 +49,12 @@ public class FormatUtilTest extends KoreanAppTest{
 		assertTrue(mapWithoutDuplicates.containsKey("1"));
 		assertFalse(mapWithoutDuplicates.containsKey("2"));
 	}
+	
+	@Test
+	public void isVideoTypeValidTest() {
+		String validType = "RADIO";
+		String invalidType = "invalidType";
+		assertTrue(FormatUtil.isVideoTypeValid(validType));
+		assertFalse(FormatUtil.isVideoTypeValid(invalidType));
+	}
 }
