@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.koreanApp.entity.Video;
 import com.koreanApp.service.VideoService;
 import com.koreanApp.util.FormatUtil;
+import com.koreanApp.util.InvalidTranslationException;
 import com.koreanApp.util.MissingPropertyException;
 import com.koreanApp.util.RepeatedPropertyException;
 
@@ -51,7 +52,7 @@ public class VideoController {
 	public @ResponseBody ResponseEntity<Object> addVideo(@RequestBody Video video) {
 		try {
 			return new ResponseEntity<Object>(videoService.addVideo(video), HttpStatus.OK);
-		} catch(MissingPropertyException | RepeatedPropertyException ex) {
+		} catch(MissingPropertyException | RepeatedPropertyException | InvalidTranslationException ex) {
 			return new ResponseEntity<Object>(ex.getMessage(), HttpStatus.BAD_REQUEST);
 		} catch(Exception ex) {
 			return new ResponseEntity<Object>("Unexpected error: " + ex.getMessage(), HttpStatus.BAD_REQUEST);

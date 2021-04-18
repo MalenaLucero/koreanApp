@@ -38,8 +38,8 @@ public class SearchController {
 					searchResult.put("Lyric", lyricResult);
 					break;
 				case "VIDEO":
-					List<SearchResponse> videoResult = searchService.searchVideo(searchRequest.getIdArtist(), searchRequest.getWord());
-					searchResult.put("Video", videoResult);
+					//List<SearchResponse> videoResult = searchService.searchVideo(searchRequest.getIdArtist(), searchRequest.getWord());
+					//searchResult.put("Video", videoResult);
 					break;
 				case "TEXT":
 					List<SearchResponse> textResult = searchService.searchText(searchRequest.getIdArtist(), searchRequest.getWord());
@@ -56,7 +56,7 @@ public class SearchController {
 	}
 	
 	@GetMapping(path = "/lyric")
-	public @ResponseBody ResponseEntity<Object> searchLyric(@RequestParam String word, @RequestParam(required = false) Integer idArtist){
+	public @ResponseBody ResponseEntity<Object> searchLyric(@RequestParam String word, @RequestParam(required = false) Integer idArtist, @RequestParam(required = false) String type){
 		try {
 			List<SearchResponse> lyricResult = searchService.searchLyric(idArtist, word);
 			return new ResponseEntity<Object>(lyricResult, HttpStatus.OK);
@@ -68,9 +68,9 @@ public class SearchController {
 	}
 	
 	@GetMapping(path = "/video")
-	public @ResponseBody ResponseEntity<Object> searchVideo(@RequestParam String word, @RequestParam(required = false) Integer idArtist){
+	public @ResponseBody ResponseEntity<Object> searchVideo(@RequestParam String word, @RequestParam(required = false) Integer idArtist, @RequestParam(required = false) String type){
 		try {
-			List<SearchResponse> videoResult = searchService.searchVideo(idArtist, word);
+			List<SearchResponse> videoResult = searchService.searchVideo(idArtist, word, type);
 			return new ResponseEntity<Object>(videoResult, HttpStatus.OK);
 		} catch (InvalidSearchWordException ex){
 			return new ResponseEntity<Object>(ex.getMessage(), HttpStatus.BAD_REQUEST);
@@ -80,7 +80,7 @@ public class SearchController {
 	}
 	
 	@GetMapping(path = "/text")
-	public @ResponseBody ResponseEntity<Object> searchText(@RequestParam String word, @RequestParam(required = false) Integer idArtist){
+	public @ResponseBody ResponseEntity<Object> searchText(@RequestParam String word, @RequestParam(required = false) Integer idArtist, @RequestParam(required = false) String type){
 		try {
 			List<SearchResponse> textResult = searchService.searchText(idArtist, word);
 			return new ResponseEntity<Object>(textResult, HttpStatus.OK);

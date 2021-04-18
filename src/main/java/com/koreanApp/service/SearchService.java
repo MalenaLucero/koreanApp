@@ -11,11 +11,13 @@ import com.koreanApp.entity.Lyric;
 import com.koreanApp.payload.SearchResponse;
 import com.koreanApp.entity.Text;
 import com.koreanApp.entity.Video;
+import com.koreanApp.enums.VideoTypes;
 import com.koreanApp.repository.LyricRepository;
 import com.koreanApp.repository.TextRepository;
 import com.koreanApp.repository.VideoRepository;
 import com.koreanApp.util.FormatUtil;
 import com.koreanApp.util.InvalidSearchWordException;
+import com.koreanApp.util.InvalidTypeException;
 
 @Service
 public class SearchService {
@@ -36,15 +38,19 @@ public class SearchService {
 		return generateLyricSearchResult(lyricsResults, word);
 	}
 	
-	public List<SearchResponse> searchVideo(Integer idArtist, String word) throws InvalidSearchWordException{
+	public List<SearchResponse> searchVideo(Integer idArtist, String word, String type) throws InvalidSearchWordException, InvalidTypeException{
 		if(FormatUtil.isStringEmpty(word)) {
 			throw new InvalidSearchWordException();
 		} 
 		Iterable<Video> videoResults;
-		if(FormatUtil.isNumberEmpty(idArtist)) {
+		if(FormatUtil.isNumberEmpty(idArtist) && FormatUtil.isStringEmpty(type)) {
 			videoResults = videoRepository.findByOriginalTextContaining(word);
-		} else {
+		} else if(FormatUtil.isStringEmpty(type)){
 			videoResults = videoRepository.findByIdArtistAndOriginalTextContaining(idArtist, word);
+		} else if(FormatUtil.isNumberEmpty(idArtist)) {
+			videoResults = videoRepository.findByTypeAndOriginalTextContaining(VideoTypes.valueOf(type), word);
+		} else {
+			videoResults = videoRepository.findByIdArtistAndTypeAndOriginalTextContaining(idArtist, VideoTypes.valueOf(type), word);
 		}
 		return generateVideoSearchResult(videoResults, word);
 	}

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.koreanApp.entity.Video;
 import com.koreanApp.repository.VideoRepository;
 import com.koreanApp.util.FormatUtil;
+import com.koreanApp.util.InvalidTranslationException;
 import com.koreanApp.util.MissingPropertyException;
 import com.koreanApp.util.RepeatedPropertyException;
 
@@ -28,13 +29,18 @@ public class VideoService {
 		return videoRepository.findByTitle(title);
 	}
 	
-	public Video addVideo(Video video) throws MissingPropertyException, RepeatedPropertyException {
+	public Video addVideo(Video video) throws MissingPropertyException, RepeatedPropertyException, InvalidTranslationException {
 		if(FormatUtil.isStringEmpty(video.getTitle())) {
 			throw new MissingPropertyException("title");
 		}
 		if (videoRepository.findByTitle(video.getTitle()).isPresent()) {
 			throw new RepeatedPropertyException("title");
 		} 
+		if (!FormatUtil.isStringEmpty(video.getTranslation())) {
+			if(!video.isTranslationValid()) {
+				throw new InvalidTranslationException();
+			}
+		}
 		return videoRepository.save(video);
 	}
 	
