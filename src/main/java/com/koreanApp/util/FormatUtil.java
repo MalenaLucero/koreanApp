@@ -51,4 +51,13 @@ public class FormatUtil {
 		}
 		return isValid;
 	}
+	
+	public static String deleteFromString(String fullString, String stringToDelete) {
+		if(fullString.contains(stringToDelete)) {
+			String newString = fullString.replace(stringToDelete, "");
+			return deleteFromString(newString, stringToDelete);
+		} else {
+			return fullString;
+		}
+	}
 }

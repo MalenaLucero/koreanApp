@@ -36,10 +36,8 @@ public class VideoService {
 		if (videoRepository.findByTitle(video.getTitle()).isPresent()) {
 			throw new RepeatedPropertyException("title");
 		} 
-		if (!FormatUtil.isStringEmpty(video.getTranslation())) {
-			if(!video.isTranslationValid()) {
-				throw new InvalidTranslationException();
-			}
+		if (!FormatUtil.isStringEmpty(video.getTranslation()) && !video.isTranslationValid()) {
+			throw new InvalidTranslationException();
 		}
 		return videoRepository.save(video);
 	}

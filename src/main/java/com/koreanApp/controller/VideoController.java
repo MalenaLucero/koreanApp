@@ -3,6 +3,7 @@ package com.koreanApp.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -48,8 +49,9 @@ public class VideoController {
 	}
 	
 	@PreAuthorize("hasRole('DEVELOP') or hasRole('ADMIN')")
-	@PostMapping(path = "")
-	public @ResponseBody ResponseEntity<Object> addVideo(@RequestBody Video video) {
+	@PostMapping(path = "",
+			consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE})
+	public @ResponseBody ResponseEntity<Object> addVideo(Video video) {
 		try {
 			return new ResponseEntity<Object>(videoService.addVideo(video), HttpStatus.OK);
 		} catch(MissingPropertyException | RepeatedPropertyException | InvalidTranslationException ex) {

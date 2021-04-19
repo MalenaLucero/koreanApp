@@ -57,4 +57,11 @@ public class FormatUtilTest extends KoreanAppTest{
 		assertTrue(FormatUtil.isVideoTypeValid(validType));
 		assertFalse(FormatUtil.isVideoTypeValid(invalidType));
 	}
+	
+	@Test
+	public void deleteFromStringTest() {
+		String fullString = "Invalid translation format";
+		String result = FormatUtil.deleteFromString(fullString, "a");
+		assertFalse(result.contains("a"));
+	}
 }

@@ -1,6 +1,8 @@
 package com.koreanApp.entity;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import javax.persistence.Column;
@@ -58,7 +60,7 @@ public class Video {
 	}
 
 	public void setOriginalText(String originalText) {
-		this.originalText = originalText;
+		this.originalText = formatText(originalText);
 	}
 
 	public String getTranslation() {
@@ -66,7 +68,7 @@ public class Video {
 	}
 
 	public void setTranslation(String translation) {
-		this.translation = translation;
+		this.translation = formatText(translation);
 	}
 
 	public String getLink() {
@@ -98,7 +100,7 @@ public class Video {
 		Map<String, String> textMap = new HashMap<String, String>();
 		String temporization = null;
 		for (int i = 0; i < textArray.length; i++) {
-			if(textArray[i].contains("-->")) {
+			if(textArray[i].contains("00:0") && textArray[i].length() == 8) {
 				temporization = textArray[i];
 			} else {
 				textMap.put(temporization, textArray[i]);
@@ -131,5 +133,40 @@ public class Video {
 			}
 		}
 		return isValid;
+	}
+	
+	public String formatText(String text) {
+		String[] textArray = text.split("\\n");
+		List<String> formattedTextList = new LinkedList<String>();
+		for (int i = 0; i < textArray.length; i++) {
+			if(textArray[i].contains("-->")) {
+				String temporization = textArray[i];
+				formattedTextList.add(formatTemporization(temporization));
+			} else {
+				String line = textArray[i];
+				while(i < textArray.length - 1 && !textArray[i + 1].contains("-->")) {
+					i++;
+					line = line + " " + textArray[i];
+				}
+				formattedTextList.add(formatLine(line));
+			}
+		}
+		String listToString = "";
+		for(int i = 0; i < formattedTextList.size(); i++) {
+			if(i == formattedTextList.size() - 1) {
+				listToString = listToString + formattedTextList.get(i);
+			} else {
+				listToString = listToString + formattedTextList.get(i) + "\n";
+			}
+		}
+		return listToString;
+	}
+	
+	public String formatTemporization(String temporization) {
+		return temporization.substring(0, 8);
+	}
+	
+	public String formatLine(String line) {
+		return line.replace("\"", "'");
 	}
 }
