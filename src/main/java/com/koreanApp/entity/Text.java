@@ -80,14 +80,24 @@ public class Text {
 	}
 
 	public boolean isTranslationValid() {
-		String[] originalTextArray = FormatUtil.textFromStringToArray(originalText);
-		String[] translationArray = FormatUtil.textFromStringToArray(translation);
-		return originalTextArray.length == translationArray.length;
+		boolean isValid = true;
+		String[] originalTextArray = FormatUtil.textFromStringToArrayWithEmptyStrings(originalText);
+		String[] translationArray = FormatUtil.textFromStringToArrayWithEmptyStrings(translation);
+		if(originalTextArray.length == translationArray.length) {
+			for (int i = 0; i < originalTextArray.length; i++) {
+				if(originalTextArray[i].length() == 0 && translationArray[i].length() != 0) {
+					isValid = false;
+				}
+			}
+		} else {
+			isValid = false;
+		}
+		return isValid;
 	}
 
 	public Map<String, String[]> getLinesContaining(String word) {
-		String[] originalTextArray = FormatUtil.textFromStringToArray(originalText);
-		String[] translationArray = FormatUtil.textFromStringToArray(translation);
+		String[] originalTextArray = FormatUtil.textFromStringToArrayWithoutEmptyStrings(originalText);
+		String[] translationArray = FormatUtil.textFromStringToArrayWithoutEmptyStrings(translation);
 		Map<String, String[]> lines = new HashMap<String, String[]>();
 		
 		for (int i = 0; i < originalTextArray.length; i++) {

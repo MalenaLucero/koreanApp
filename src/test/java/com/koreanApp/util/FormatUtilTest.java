@@ -15,7 +15,7 @@ public class FormatUtilTest extends KoreanAppTest{
 	@Test 
 	public void textFromStringToArrayWithOneParagraphShouldEqual(){
 		String text = "Yeah, yeah\nOkay, okay, okay, okay\nYeah\n3년이 지났네\nAgust D";
-		String[] textArray = FormatUtil.textFromStringToArray(text);
+		String[] textArray = FormatUtil.textFromStringToArrayWithoutEmptyStrings(text);
 		assertEquals(5, textArray.length);
 	}
 	
@@ -24,7 +24,7 @@ public class FormatUtilTest extends KoreanAppTest{
 		String text = "SUGA has this way of talking passionately with a deadpan look on his face. Full of passion about his life and music.\n\n"
 				+ "How is your shoulder?\n"
 				+ "SUGA: Good. I think it’ll get even better once I take off this brace.";
-		String[] textArray = FormatUtil.textFromStringToArray(text);
+		String[] textArray = FormatUtil.textFromStringToArrayWithoutEmptyStrings(text);
 		assertEquals(3, textArray.length);
 	}
 	

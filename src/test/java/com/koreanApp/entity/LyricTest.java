@@ -31,7 +31,6 @@ public class LyricTest {
 		mockLyric = lyric;
 	}
 	
-	
 	@Test
 	public void isTranslationValidShouldBeTrue() {
 		assertTrue(mockLyric.isTranslationValid());
@@ -45,6 +44,42 @@ public class LyricTest {
 				+ "Three years have passed\n"
 				+ "Agust D\n"
 				+ "Honestly, I don’t know how many songs to put in");
+		assertFalse(mockLyric.isTranslationValid());
+	}
+	
+	@Test
+	public void isTranslationValidWithBlanksShouldBeTrue() {
+		mockLyric.setOriginalText("Yeah, yeah\n\n"
+				+ "Okay, okay, okay, okay\n"
+				+ "Yeah\n"
+				+ "3년이 지났네\n"
+				+ "Agust D\n\n"
+				+ "솔직히, 몇 곡 넣을지 잘 모르겠어 걍\n");
+		mockLyric.setTranslation("Yeah, yeah\n\n"
+				+ "Okay, okay, okay, okay\n"
+				+ "Yeah\n"
+				+ "Three years have passed\n"
+				+ "Agust D\n\n"
+				+ "Honestly, I don’t know how many songs to put in");
+		assertTrue(mockLyric.getOriginalText().split("\\n").length == mockLyric.getTranslation().split("\\n").length);
+		assertTrue(mockLyric.isTranslationValid());
+	}
+	
+	@Test
+	public void isTranslationValidWithBlanksShouldBeFalse() {
+		mockLyric.setOriginalText("Yeah, yeah\n\n"
+				+ "Okay, okay, okay, okay\n"
+				+ "Yeah\n3"
+				+ "년이 지났네\n"
+				+ "Agust D\n\n"
+				+ "솔직히, 몇 곡 넣을지 잘 모르겠어 걍\n");
+		mockLyric.setTranslation("Yeah, yeah\n"
+				+ "Okay, okay, okay, okay\n\n"
+				+ "Yeah\n"
+				+ "Three years have passed\n\n"
+				+ "Agust D\n"
+				+ "Honestly, I don’t know how many songs to put in");
+		assertTrue(mockLyric.getOriginalText().split("\\n").length == mockLyric.getTranslation().split("\\n").length);
 		assertFalse(mockLyric.isTranslationValid());
 	}
 	

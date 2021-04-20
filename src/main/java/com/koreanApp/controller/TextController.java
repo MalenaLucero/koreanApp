@@ -49,7 +49,7 @@ public class TextController {
 	
 	@PreAuthorize("hasRole('DEVELOP') or hasRole('ADMIN')")
 	@PostMapping(path = "")
-	public @ResponseBody ResponseEntity<Object> addText(@RequestBody Text text) {
+	public @ResponseBody ResponseEntity<Object> addText(Text text) {
 		try {
 			return new ResponseEntity<Object>(textService.addText(text), HttpStatus.OK);
 		} catch(MissingPropertyException | RepeatedPropertyException | InvalidTranslationException ex) {

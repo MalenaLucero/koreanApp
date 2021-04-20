@@ -7,7 +7,11 @@ import java.util.Map;
 import com.koreanApp.enums.VideoTypes;
 
 public class FormatUtil {
-	public static String[] textFromStringToArray(String text) {
+	public static String[] textFromStringToArrayWithEmptyStrings(String text) {
+		return text.split("\\n");
+	}
+	
+	public static String[] textFromStringToArrayWithoutEmptyStrings(String text) {
 		String[] textArray = text.split("\\n");
 		String[] textArrayWithoutEmptyStrings = Arrays.stream(textArray).filter(x -> x.length() > 0).toArray(String[]::new);
 		return textArrayWithoutEmptyStrings;

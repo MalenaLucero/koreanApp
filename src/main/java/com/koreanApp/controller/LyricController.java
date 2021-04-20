@@ -48,7 +48,7 @@ public class LyricController {
 	
 	@PreAuthorize("hasRole('DEVELOP') or hasRole('ADMIN')")
 	@PostMapping(path = "")
-	public @ResponseBody ResponseEntity<Object> addLyric(@RequestBody Lyric lyric) {
+	public @ResponseBody ResponseEntity<Object> addLyric(Lyric lyric) {
 		try {
 			return new ResponseEntity<Object>(lyricService.addLyric(lyric), HttpStatus.OK);
 		} catch(MissingPropertyException | RepeatedPropertyException | InvalidTranslationException ex) {
