@@ -12,7 +12,7 @@ https://koreanapp.herokuapp.com/api/public/artist
 
 https://koreanapp.herokuapp.com/api/public/search/lyric?word=오늘&idArtist=5
 
-https://koreanapp.herokuapp.com/api/public/search/video?word=이미&idArtist=3&type=RADIO
+https://koreanapp.herokuapp.com/api/public/search/video?word=저녁&idArtist=3&type=RADIO
 
 https://koreanapp.herokuapp.com/api/public/search/text?word=그런데&idArtist=3
 
