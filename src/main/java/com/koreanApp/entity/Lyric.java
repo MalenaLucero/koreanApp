@@ -14,7 +14,7 @@ import javax.persistence.ManyToOne;
 import com.koreanApp.util.FormatUtil;
 
 @Entity
-public class Lyric {
+public class Lyric implements Translatable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;

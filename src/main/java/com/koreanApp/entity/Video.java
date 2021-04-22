@@ -19,7 +19,7 @@ import com.koreanApp.enums.VideoTypes;
 import com.koreanApp.util.FormatUtil;
 
 @Entity
-public class Video {
+public class Video implements Translatable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;

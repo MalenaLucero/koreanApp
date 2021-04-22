@@ -14,7 +14,7 @@ import javax.persistence.ManyToOne;
 import com.koreanApp.util.FormatUtil;
 
 @Entity
-public class Text {
+public class Text implements Translatable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
@@ -81,16 +81,22 @@ public class Text {
 
 	public boolean isTranslationValid() {
 		boolean isValid = true;
-		String[] originalTextArray = FormatUtil.textFromStringToArrayWithEmptyStrings(originalText);
-		String[] translationArray = FormatUtil.textFromStringToArrayWithEmptyStrings(translation);
-		if(originalTextArray.length == translationArray.length) {
-			for (int i = 0; i < originalTextArray.length; i++) {
-				if(originalTextArray[i].length() == 0 && translationArray[i].length() != 0) {
-					isValid = false;
-				}
-			}
-		} else {
+		String[] originalTextArray = FormatUtil.textFromStringToArrayWithoutEmptyStrings(originalText);
+		String[] translationArray = FormatUtil.textFromStringToArrayWithoutEmptyStrings(translation);
+		if(originalTextArray.length != translationArray.length) {
+			System.out.println("Array lengths are not the same");
 			isValid = false;
+		} 
+		
+		//checks for equal number of sentences per paragraph
+		for (int i = 0; i < originalTextArray.length; i++) {
+			if(originalTextArray[i].split("\\.").length != translationArray[i].split("\\.").length) {
+				System.out.println("line: " + originalTextArray[i]);
+				System.out.println("paragraph: " + (i + 1));
+				System.out.println("original length: " + originalTextArray[i].split("\\.").length);
+				System.out.println("translation length: " + translationArray[i].split("\\.").length);
+				isValid = false;
+			}
 		}
 		return isValid;
 	}

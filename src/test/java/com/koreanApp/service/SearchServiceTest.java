@@ -47,6 +47,7 @@ public class SearchServiceTest {
 	
 	@Test
 	public void searchTextByArtistAndWordTest() throws InvalidSearchWordException {
+		word = "스튜디오";
 		List<SearchResponse> response = searchService.searchText(idArtist, word);
 		String originalText = getFirstOriginalText(response);
 		assertTrue(originalText.contains(word));
@@ -54,6 +55,7 @@ public class SearchServiceTest {
 	
 	@Test
 	public void searchTextByWordTest() throws InvalidSearchWordException {
+		word = "스튜디오";
 		List<SearchResponse> response = searchService.searchText(idArtist, word);
 		String originalText = getFirstOriginalText(response);
 		assertTrue(originalText.contains(word));
